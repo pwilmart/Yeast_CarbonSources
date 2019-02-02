@@ -37,3 +37,5 @@ rsconnect/
 
 # Jupyter notebook stuff
 .ipynb_checkpoints/
+./MQ/.ipynb_checkpoints/
+./PAW/.ipynb_checkpoints/
