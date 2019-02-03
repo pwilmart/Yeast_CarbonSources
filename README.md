@@ -50,7 +50,7 @@ Analyses:
 
 ---
 
-### R input table prep
+## R input table prep
 
 Basic steps were similar for both pipelines:
 1. flag proteins to exclude
