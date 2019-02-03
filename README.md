@@ -53,17 +53,17 @@ Analyses:
 ## R input table prep
 
 Basic steps were similar for both pipelines:
-1. flag proteins to exclude
+- flag proteins to exclude
   - common contaminants
   - decoys
   - proteins with no reporter ion signals
-1. sort excluded proteins to bottom of table
-1. make new tab
+- sort excluded proteins to bottom of table
+- make new tab
   - add column of protein accessions
   - add columns of the TMT channels
-1. export the new tab contents to text files
+- export the new tab contents to text files
   - table should be well-formed (single header line) and rectangular
-1. read text file into R
+- read text file into R
 
 Statistical test results in R are collected into a data frame in the same order as the imported proteins. At the end of the notebook, the results file is saved as a text file for adding back to the main protein results spreadsheet file.
 
