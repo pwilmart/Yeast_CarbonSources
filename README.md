@@ -65,6 +65,6 @@ Basic steps were similar for both pipelines:
   - table should be well-formed (single header line) and rectangular
 - read text file into R
 
-Statistical test results in R are collected into a data frame in the same order as the imported proteins. At the end of the notebook, the results file is saved as a text file for adding back to the main protein results spreadsheet file.
+Statistical test results in R are collected into a data frame in the same order as the imported proteins. At the end of the notebook, the results file is saved as a text file for adding back to the main protein results spreadsheet file. The accessions are also included to make sure that the rows are correctly aligned.
 
-Eventually, there needs to be a coherent, comprehensive summary file that contains the proteomics results, the statistical testing results, and any other information to aid biological interpretation (rich annotations, etc.). An Excel file is a good format for this since adding descriptive text and formatting are easy. A basic Excel sheet can be easily distributed in Supplemental files and opened in Open Office applications.
+Eventually, there needs to be a coherent, comprehensive summary file that contains the proteomics results, the statistical testing results, and any other information to aid biological interpretation (rich annotations, etc.). This will be needed for publication and is a nice thing to include in data repositories. An Excel file is a good format for this since adding descriptive text and formatting are easy. A basic Excel sheet can be easily distributed in Supplemental files and opened in Open Office applications.
