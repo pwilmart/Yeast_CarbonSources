@@ -71,7 +71,7 @@ apply_tmm_factors <- function(y) {
 
     # compute the normalized data as a new data frame
     tmt_tmm <- as.data.frame(sweep(y$counts, 2, norm_facs, FUN = "*"))
-    colnames(tmt_tmm) <- str_c(colnames(tmt_raw), "_tmm")
+    colnames(tmt_tmm) <- str_c(colnames(y$counts), "_tmm")
     
     # return the data frame
     tmt_tmm
