@@ -9,7 +9,7 @@ library("edgeR")
 library("limma")
 
 # load the data file into a data tibble 
-raw_data <- read_tsv(file = "./results_files/R-input.txt")
+raw_data <- read_tsv(file = "R-input.txt")
 
 # separate row identifiers from the data
 accession <- raw_data$Accession
@@ -72,7 +72,7 @@ apply_tmm_factors <- function(y) {
 
     # compute the normalized data as a new data frame
     tmt_tmm <- as.data.frame(sweep(y$counts, 2, norm_facs, FUN = "*"))
-    colnames(tmt_tmm) <- str_c(colnames(y$counts), "_tmm")
+    colnames(tmt_tmm) <- str_c(colnames(tmt_raw), "_tmm")
     
     # return the data frame
     tmt_tmm
@@ -368,6 +368,54 @@ volcano_plot(gal_glu, "ave_gal", "ave_glu", "Galactose vs Glucose")
 pairs.panels(log10(tmt_tmm[c(gal, glu)]), method = "spearman", 
              lm = TRUE, main = "Galactose versus Glucose")
 
+# ============== individual protein expression plots ===========================
+
+# function to extract the identifier part of the accesssion
+get_identifier <- function(accession) {
+    identifier <- str_split(accession, "\\|", simplify = TRUE)
+    identifier[,3]
+}
+
+set_plot_dimensions <- function(width_choice, height_choice) {
+    options(repr.plot.width=width_choice, repr.plot.height=height_choice)
+}
+
+plot_top_tags <- function(results, nleft, nright, top_tags) {
+    # results should have data first, then test results (two condition summary table)
+    # nleft, nright are number of data points in each condition
+    # top_tags is number of up and number of down top DE candidates to plot
+    # get top ipregulated
+    up <- results %>% 
+        filter(logFC >= 0) %>%
+        arrange(FDR)
+    up <- up[1:top_tags, ]
+    
+    # get top down regulated
+    down <- results %>% 
+        filter(logFC < 0) %>%
+        arrange(FDR)
+    down <- down[1:top_tags, ]
+    
+    # pack them
+    proteins <- rbind(up, down)
+        
+    color = c(rep("red", nleft), rep("blue", nright))
+    for (row_num in 1:nrow(proteins)) {
+        row <- proteins[row_num, ]
+        vec <- as.vector(unlist(row[1:(nleft + nright)]))
+        names(vec) <- colnames(row[1:(nleft + nright)])
+        title <- str_c(get_identifier(row$Acc), ", int: ", scientific(mean(vec), 2), 
+                       ", p-val: ", scientific(row$FDR, digits = 3), 
+                       ", FC: ", round(row$FC, digits = 1))
+        barplot(vec, col = color, main = title)
+    }    
+}
+
+# plot the top 25 up and 20 down proteins
+set_plot_dimensions(6, 3.5)
+plot_top_tags(gal_glu, 3, 3, 20)
+set_plot_dimensions(7, 7)
+
 # compute the exact test models, p-values, FC, etc.
 et <- exactTest(y, pair = c("gal", "raf"))
 
@@ -405,6 +453,11 @@ volcano_plot(gal_raf, "ave_gal", "ave_raf", "Galactose vs Raffinose")
 # compare the conditions to each other
 pairs.panels(log10(tmt_tmm[c(gal, raf)]), method = "spearman", 
              lm = TRUE, main = "Galactose versus Raffinose")
+
+# plot the top 25 up and 20 down proteins
+set_plot_dimensions(6, 3.5)
+plot_top_tags(gal_raf, 3, 3, 20)
+set_plot_dimensions(7, 7)
 
 # compute the exact test models, p-values, FC, etc.
 et <- exactTest(y, pair = c("glu", "raf"))
@@ -444,9 +497,14 @@ volcano_plot(glu_raf, "ave_glu", "ave_raf", "Glucose vs Raffinose")
 pairs.panels(log10(tmt_tmm[c(glu, raf)]), method = "spearman", 
              lm = TRUE, main = "Glucose versus Raffinose")
 
+# plot the top 25 up and 20 down proteins
+set_plot_dimensions(6, 3.5)
+plot_top_tags(glu_raf, 3, 3, 20)
+set_plot_dimensions(7, 7)
+
 # save the results file to add back to the main spreadsheet
 results <- cbind(gal_glu, gal_raf, glu_raf)
-write.table(results, "./results_files/CarbonSources_results.txt", sep = "\t", row.names = FALSE, na = " ")
+write.table(results, "CarbonSources_results.txt", sep = "\t", row.names = FALSE, na = " ")
 
 # log the session information
 sessionInfo()
